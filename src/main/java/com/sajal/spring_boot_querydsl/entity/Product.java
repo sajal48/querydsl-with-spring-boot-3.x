@@ -2,6 +2,8 @@ package com.sajal.spring_boot_querydsl.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sajal.spring_boot_querydsl.exception.InvalidPriceException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -16,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Setter
@@ -34,6 +37,7 @@ public class Product {
     private Double price;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
@@ -43,10 +47,10 @@ public class Product {
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Review> reviews;
+    private Set<Review> reviews = new HashSet<>();
 
     // Core logic
     public void addTag(Tag tag) {

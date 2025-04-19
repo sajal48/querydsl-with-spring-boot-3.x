@@ -1,5 +1,6 @@
 package com.sajal.spring_boot_querydsl.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sajal.spring_boot_querydsl.exception.InvalidRatingException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private Product product;
 
     // Getters and Setters
