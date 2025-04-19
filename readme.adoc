@@ -1,5 +1,4 @@
-= Spring Boot QueryDSL Product API Documentation
-(spring boot 3.4 querydsl) 
+= Spring Boot QueryDSL Product API Documentation (spring boot 3.4 with querydsl) 
 :toc: left
 :toclevels: 2
 :source-highlighter: highlight.js
