@@ -52,6 +52,8 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Review> reviews = new HashSet<>();
 
+    private Double avgRating = 0.0;
+
     // Core logic
     public void addTag(Tag tag) {
         this.tags.add(tag);
@@ -66,11 +68,13 @@ public class Product {
     public void addReview(Review review) {
         this.reviews.add(review);
         review.setProduct(this);
+        updateAvgRating();
     }
 
     public void removeReview(Review review) {
         this.reviews.remove(review);
         review.setProduct(null);
+        updateAvgRating();
     }
 
     public void updatePrice(Double newPrice) {
@@ -78,6 +82,17 @@ public class Product {
             throw new InvalidPriceException("Price must be greater than zero.");
         }
         this.price = newPrice;
+    }
+
+    private void updateAvgRating() {
+        if (reviews.isEmpty()) {
+            this.avgRating = 0.0;
+        } else {
+            this.avgRating = reviews.stream()
+                    .mapToDouble(Review::getRating)
+                    .average()
+                    .orElse(0.0);
+        }
     }
 
 }

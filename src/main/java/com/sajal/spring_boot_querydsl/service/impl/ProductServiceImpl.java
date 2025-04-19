@@ -27,4 +27,8 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> searchProductsByName(String name, Pageable pageable) {
         return productRepository.searchByName(name, pageable);
     }
+    @Override
+    public Page<Product> getProductsByFilters(String name, Double minPrice, Double maxPrice, Double minAvgRating, String categoryName, Pageable pageable) {
+        return productRepository.findByFilters(name, minPrice, maxPrice, minAvgRating, categoryName, pageable);
+    }
 }

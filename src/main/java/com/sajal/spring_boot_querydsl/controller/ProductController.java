@@ -33,4 +33,15 @@ public class ProductController {
             Pageable pageable) {
         return productService.searchProductsByName(name, pageable);
     }
+
+    @GetMapping("/filter")
+    public Page<Product> getProductsByFilters(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Double minAvgRating,
+            @RequestParam(required = false) String categoryName,
+            Pageable pageable) {
+        return productService.getProductsByFilters(name, minPrice, maxPrice, minAvgRating, categoryName, pageable);
+    }
 }
