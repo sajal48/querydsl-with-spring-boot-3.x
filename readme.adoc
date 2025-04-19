@@ -1,0 +1,191 @@
+= Spring Boot(3.x) with  QueryDSL 
+:toc: left
+:toclevels: 2
+
+== Overview
+This is a Spring Boot (3.4.4) project that uses QueryDSL for dynamic query generation. The project includes functionality to filter products by various criteria such as name, price range, average rating, and category name.
+
+== Technical Stack
+- Java 21
+- Spring Boot 3.4.4
+- QueryDSL 5.1.0
+- H2 Database
+- Gradle 8.x
+- Lombok
+- Spring Data JPA
+
+== Setup Instructions
+
+=== Prerequisites
+- JDK 21 or higher
+- Gradle 8.x
+- Git
+
+=== Build and Run
+1. Clone the repository:
+[source,bash]
+----
+git clone <repository-url>
+cd spring_boot_querydsl
+----
+
+2. Build the project:
+[source,bash]
+----
+gradlew clean build
+----
+
+3. Run the application:
+[source,bash]
+----
+gradlew bootRun
+----
+
+The application will start on http://localhost:8080
+
+=== Database
+The application uses H2 in-memory database. Sample data is automatically loaded via DataInitializer when the application starts.
+
+H2 Console: http://localhost:8080/h2-console
+- JDBC URL: jdbc:h2:mem:testdb
+- Username: sa
+- Password: (leave empty)
+
+== Features
+- Filter products by name, price range, average rating, and category name.
+- Optional filters: Any combination of filters can be applied.
+- Pagination support for all endpoints.
+
+== Endpoints
+
+=== 1. Filter Products
+**Endpoint**: `GET /api/products/filter`
+
+**Description**: Filters products based on the provided criteria. All filters are optional.
+
+**Query Parameters**:
+- `name` (optional): Filter by product name (case-insensitive).
+- `minPrice` (optional): Minimum price of the product.
+- `maxPrice` (optional): Maximum price of the product.
+- `minAvgRating` (optional): Minimum average rating of the product.
+- `categoryName` (optional): Filter by category name (case-insensitive).
+- `page` (optional): Page number for pagination (default: 0).
+- `size` (optional): Number of items per page (default: 10).
+- `sort` (optional): Sorting criteria in the format `field,direction` (e.g., `price,desc`). Multiple sort criteria can be provided.
+
+**Sample `curl` Commands**:
+
+1. Filter by name:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?name=phone"
+----
+
+2. Filter by price range:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?minPrice=10&maxPrice=100"
+----
+
+3. Filter by minimum average rating:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?minAvgRating=4.5"
+----
+
+4. Filter by category name:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?categoryName=Electronics"
+----
+
+5. Combined filters with pagination:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?name=phone&minPrice=500&maxPrice=1000&minAvgRating=4&categoryName=Electronics&page=0&size=10"
+----
+
+6. Filter by name with pagination:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?name=phone&page=0&size=5"
+----
+
+7. Filter by price range with pagination:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?minPrice=10&maxPrice=100&page=0&size=10"
+----
+
+8. Filter by minimum average rating with pagination:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?minAvgRating=4.5&page=0&size=20"
+----
+
+9. Filter by category name with pagination:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?categoryName=Electronics&page=0&size=15"
+----
+
+10. Combined filters with pagination:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?name=phone&minPrice=500&maxPrice=1000&minAvgRating=4&categoryName=Electronics&page=0&size=10"
+----
+
+11. Using sort parameter:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?categoryName=Electronics&page=0&size=10&sort=price,desc"
+----
+
+12. Multiple sort criteria:
+[source,bash]
+----
+curl "http://localhost:8080/api/products/filter?minPrice=100&page=0&size=10&sort=category.name,asc&sort=price,desc"
+----
+
+== Response Format
+The API returns a paginated response in the following format:
+
+[source,json]
+----
+{
+    "content": [
+        {
+            "id": 1,
+            "name": "Smartphone",
+            "description": "Latest model smartphone",
+            "price": 699.99,
+            "category": {
+                "id": 1,
+                "name": "Electronics"
+            },
+            "reviews": [
+                {
+                    "id": 1,
+                    "rating": 5,
+                    "comment": "Excellent phone with great features!"
+                }
+            ],
+            "tags": [
+                {
+                    "id": 1,
+                    "name": "Sale"
+                }
+            ]
+        }
+    ],
+    "pageable": {
+        "pageNumber": 0,
+        "pageSize": 10,
+        "sort": []
+    },
+    "totalElements": 1,
+    "totalPages": 1,
+    "last": true
+}
+----
+
